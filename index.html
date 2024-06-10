@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fairy Tale Bot</title>
+ 
+
+  <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
+  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .body-head {
+      display: flex;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    .btn,
+    .btn-stop {
+      padding: 10px 20px;
+      font-size: 20px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn {
+      background-color: #4caf5e;
+      color: white;
+      border-radius: 100px;
+    }
+
+    .btn-stop {
+      background-color: #f44336;
+      color: white;
+      display: none;
+      border-radius: 20px;
+    }
+
+    .btn:hover {
+      background-color: #52dc6c;
+    }
+
+    .btn-stop:hover {
+      background-color: #b72218;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="body-head">
+    <button id="start-btn" class="btn"> <box-icon name='microphone' color='#ffffff'></box-icon></i></button>
+    <button id="stop-btn" class="btn-stop"> <box-icon name='microphone-off' color='#ffffff'></box-icon></button>
+    <button id="start-permission-btn" class="btn">Enable Microphone and Start</button>
+  </div>
+
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/microsoft-cognitiveservices-speech-sdk/distrib/browser/microsoft.cognitiveservices.speech.sdk.bundle.js"></script>
+  <script src="index.js"></script>
+
+
+</body>
+
+</html>
