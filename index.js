@@ -43,14 +43,7 @@ window.botpressWebChat.init({
 });
 
 window.botpressWebChat.onEvent((event) => {
-    // if (event.type === 'LIFECYCLE.READY') {
-    //     console.log("Chat interface ready", event);
-    //     const initialMessage = "Conversation Started";
-    //     window.botpressWebChat.sendPayload({
-    //         type: 'text',
-    //         text: initialMessage,
-    //     });
-    // }
+   
     if (event.type === 'MESSAGE.RECEIVED')
     console.log("A new message was received", event);
     const message = event.value.payload;
@@ -67,48 +60,36 @@ const speechConfig = window.SpeechSDK.SpeechConfig.fromSubscription(azureKey, az
 const audioConfig = window.SpeechSDK.AudioConfig.fromDefaultSpeakerOutput();
 synthesizer = new window.SpeechSDK.SpeechSynthesizer(speechConfig, audioConfig);
 
+
 // TTS Integration
 function speakText(text) {
-    if (synthesizer) {
-        isSpeaking = true;
-        synthesizer.speakTextAsync(
-            text,
-            (result) => {
-                if (result.reason === window.SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
-                    console.log('Speech synthesized for text [' + text + ']');
-                    setTimeout(() => {
-                        isSpeaking = false;
-                        shouldStartListening = true;
-                        processSpeechQueue();
-                        if (!isListening && speechQueue.length === 0) {
-                            startListening();
-                        }
-                    }, text.length * 100);
-                } else {
-                    console.error('Speech synthesis canceled, ' + result.errorDetails);
-                    isSpeaking = false;
-                }
-            },
-            (err) => {
-                console.trace('Error synthesizing speech:', err);
-                isSpeaking = false;
-            }
-        );
-    } else {
-        console.error('Synthesizer not initialized');
-    }
-}
-
-function processSpeechQueue() {
+    console.log("AI is speaking.....");
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US'; // or use selectedLanguage if you have a language selection mechanism
+    utterance.pitch = 1;
+  
+    utterance.onend = () => {
+      console.log("Speech synthesis completed");
+      isSpeaking = false;
+      shouldStartListening = true;
+      processSpeechQueue(); // Ensure the queue is processed after speaking
+    };
+  
+    isSpeaking = true;
+    window.speechSynthesis.speak(utterance);
+  }
+  
+  function processSpeechQueue() {
     if (!isSpeaking && speechQueue.length > 0 && isConversation) {
-        stopListening();
-        const nextText = speechQueue.shift();
-        speakText(nextText);
+      stopListening();
+      const nextText = speechQueue.shift();
+      speakText(nextText);
     } else if (!isSpeaking && speechQueue.length === 0 && shouldStartListening) {
-        startListening();
-        shouldStartListening = false;
+      startListening();
+      shouldStartListening = false;
     }
-}
+  }
+  
 
 document.getElementById('start-permission-btn').addEventListener('click', requestPermission);
 
