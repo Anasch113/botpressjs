@@ -21,6 +21,7 @@
       display: flex;
       justify-content: center;
       margin-top: 50px;
+      
     }
 
     .btn,
@@ -33,6 +34,7 @@
 
     .btn {
       background-color: #4caf5e;
+      margin: 0px 5px;
       color: white;
       border-radius: 100px;
       
@@ -55,6 +57,15 @@
     .btn-stop:hover {
       background-color: #b72218;
     }
+
+    @media (max-width: 500px) {
+.body-head{
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+
+    }
   </style>
 
 </head>
@@ -63,17 +74,26 @@
   <div class="body-head">
     <button id="start-btn" class="btn"> <box-icon name='microphone' color='#ffffff'></box-icon></i></button>
     <button id="stop-btn" class="btn-stop"> <box-icon name='microphone-off' color='#ffffff'></box-icon></button>
+
+    <button id="tts-btn-2" class="btn"> </i>TTS Permission</button>
+    
     <button id="start-permission-btn" class="btn">Enable Microphone and Start</button>
+    <!-- <button id="new-conversation-btn" class="btn">Start New Conversation</button> -->
   </div>
 
 
-
+ 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
   <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
   <script
     src="https://cdn.jsdelivr.net/npm/microsoft-cognitiveservices-speech-sdk/distrib/browser/microsoft.cognitiveservices.speech.sdk.bundle.js"></script>
-  <script src="index.js"></script>
+    <script src="botpress.js"></script>
+    <script src="index.js"></script>
+    <script src="./demospeech.js"></script>
+   
+ 
 
 
 </body>
