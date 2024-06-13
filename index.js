@@ -45,31 +45,13 @@ window.botpressWebChat.onEvent((event) => {
       speakText(message.text);
     }
   }
-
   else if (event.type === 'LIFECYCLE.READY') {
-
-    console.log("Chat loaded", event);
-    window.botpressWebChat.sendEvent({ type: 'createConversation' })
-    setTimeout(() => {
-      console.log("Welcome message is speaking...");
-      const utterance = new SpeechSynthesisUtterance("Hey, I am your storyteller for fairy tales. Which fairy tale would you like to hear?");
-      utterance.lang = 'en-US';
-  
-      utterance.onend = () => {
-        console.log("Speech synthesis completed");
-        startListening();
-      };
-  
-      utterance.onerror = (event) => {
-        console.error("Speech synthesis error:", event.error);
-        startListening();
-      };
-  
-      window.speechSynthesis.speak(utterance);
-    }, 9000); // Adjust the timeout duration as needed
-
-
-
+    console.log("Chat interface ready", event);
+    const initialMessage = "Conversation Started";
+    window.botpressWebChat.sendPayload({
+      type: 'text',
+      text: initialMessage,
+    });
   }
 }, ['MESSAGE.RECEIVED', 'LIFECYCLE.READY']);
 
@@ -157,7 +139,7 @@ function startListening() {
       const transcript = e.result.text;
       window.botpressWebChat.sendPayload({ type: 'text', text: transcript });
 
-      toastr.success('Recognition complete. Microphone off.');
+    
       recognizer.stopContinuousRecognitionAsync();
 
     } else {
