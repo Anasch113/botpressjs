@@ -10,6 +10,7 @@ let recognizer = null;
 let synthesizer = null;
 let botSpeaking = false;
 let messageCount = 0;
+let isPermissionGranted = false
 
 
 // Toastr configuration
@@ -95,63 +96,64 @@ function speakText(text) {
 
 
 console.log("botSpeaking", botSpeaking)
-document.getElementById('start-permission-btn').addEventListener('click', requestPermission);
 
-function requestPermission() {
-  // Request permission to use the microphone
-  navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-    // Initialize microphone
-    const audioTracks = stream.getAudioTracks();
-    if (audioTracks.length > 0) {
-      audioTracks[0].stop(); // Immediately stop the tracks to just get the permission
-    }
-    document.getElementById('start-permission-btn').style.display = 'none';
-    document.getElementById('start-btn').style.display = 'block';
-    startListening();
-  }).catch(function (err) {
-    console.error('Permission denied for microphone:', err);
-    toastr.error('Microphone permission denied. Please enable it in your browser settings.');
-  });
-}
+// STT Code
 
-
-
+document.getElementById('request-permission-btn').addEventListener('click', requestPermission);
 document.getElementById('start-btn').addEventListener('click', startListening);
 document.getElementById('stop-btn').addEventListener('click', stopListening);
 
-// STT Integration
+// Function to request microphone permission
+function requestPermission() {
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then((stream) => {
+      // Stop the tracks to release the microphone
+      stream.getTracks().forEach(track => track.stop());
+
+      isPermissionGranted = true;
+      toastr.success('Microphone permission granted.');
+      document.getElementById('request-permission-btn').style.display = 'none';
+      document.getElementById('start-btn').style.display = 'block';
+    })
+    .catch((err) => {
+      console.error('Permission denied for microphone:', err);
+      toastr.error('Microphone permission denied. Please enable it in your browser settings.');
+    });
+}
+
+
+// STT Start function
 function startListening() {
+  if (isSpeaking || isListening || !isPermissionGranted) return;
 
-
-  if (isSpeaking || isListening) return;
   isListening = true;
-  toastr.success('Microphone on!');
-  document.getElementById('start-btn').style.display = 'none';
-  document.getElementById('stop-btn').style.display = 'block';
 
 
   const speechConfig = window.SpeechSDK.SpeechConfig.fromSubscription(azureKey, azureRegion);
   const audioConfig = window.SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
   recognizer = new window.SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
 
+
+
   recognizer.recognized = (s, e) => {
     if (e.result.reason === window.SpeechSDK.ResultReason.RecognizedSpeech) {
       const transcript = e.result.text;
       window.botpressWebChat.sendPayload({ type: 'text', text: transcript });
-
-    
       recognizer.stopContinuousRecognitionAsync();
-
     } else {
-
       console.log('No speech could be recognized.');
-      stopListening()
-      // toastr.warning('No speech could be recognized. Microphone off.');
+      stopListening();
     }
   };
 
   recognizer.startContinuousRecognitionAsync(
     () => {
+
+      document.getElementById('start-btn').style.display = 'none';
+      document.getElementById('stop-btn').style.display = 'block';
+
+      toastr.success('Microphone on!');
+
       console.log('Recognition started.');
     },
     (err) => {
@@ -163,7 +165,6 @@ function startListening() {
 
   recognizer.sessionStopped = () => {
     console.log('Session stopped.');
-    // toastr.info('Session stopped. Microphone off.');
     recognizer.stopContinuousRecognitionAsync();
     isListening = false;
     document.getElementById('start-btn').style.display = 'block';
@@ -182,7 +183,7 @@ function startListening() {
 
 function stopListening() {
   isListening = false;
-  toastr.info("Microphone is off")
+  toastr.info("Microphone is off");
   document.getElementById('start-btn').style.display = 'block';
   document.getElementById('stop-btn').style.display = 'none';
 
