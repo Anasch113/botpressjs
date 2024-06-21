@@ -1,3 +1,37 @@
 refernces
 
-97% on 9 14 am
+
+
+
+hi Anasch, when you are ready with Eid we start next project:
+
+1. for TTS and STT we use azure (I have an account; what infos you need?)
+2. we implement an avatar in our Bot. When clicking on the avatar, the bot asks the user what fairy tale he wants to hear. (do you want to implement the avatar or should I give an order to someone else?)
+3. in the future we work only on macbook chrome. after we finished the bot with all features we deploy it on safari and iPhone.
+4. I will work on the bot the next days so the bot gets a little bit more intelligent
+
+text me whenever it works for you
+
+
+
+
+
+
+
+
+
+Here are some ways you can integrate an avatar into your Botpress setup:
+
+Using Images and Videos: You can incorporate images or videos of an avatar as part of your bot's user interface. This could be a static image or a dynamic video or animation.
+
+Integration with Avatar Platforms: There are platforms and tools that offer avatars as a service, such as "Bot Libre Avatar SDK" or "Botperson Avatar API". These can be integrated into Botpress to use an avatar that interacts with users.
+
+Custom Widgets and WebViews: You can create custom widgets or embed WebViews that display an avatar. This may involve using HTML, CSS, and JavaScript to control the avatar display and interaction.
+
+Botpress Extensions: There might be third-party extensions or modules for Botpress specifically designed for avatar integration. These can be used to extend your bot's functionality with avatar features.
+
+
+
+
+
+Yes. User Open url. Avatar appears. Avatar is animated. Asks User what fairy tale he want to hear. (Last step)
