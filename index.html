@@ -9,7 +9,7 @@
 
 
 
-  
+
   <link rel="stylesheet" href="./styles/style.css">
   <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
   <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
@@ -23,6 +23,7 @@
   <script src="https://aka.ms/csspeech/jsbrowserpackaged"></script>
 
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
 
 
@@ -34,14 +35,23 @@
     <div class="avatar-box">
       <img id="avatar" src="./assets/avatar.jpeg" alt="">
 
-
+      
     </div>
+    
+    <div id="spinner-box">
+      <span id="spinner" class="spinner">
+
+      </span>
+      <p>Enabling Microphone</p>
+    </div>
+
     <div class="permissions-conatiner">
-      <button id="start-btn-2" class="btn"> <box-icon name='microphone' color='#ffffff'></box-icon></i>
+      
+      <!-- <button id="start-btn-2" class="btn"> <box-icon name='microphone' color='#ffffff'></box-icon></i>
 
       </button>
       <button id="stop-btn-2" class="btn-stop"> <box-icon name='microphone-off' color='#ffffff'></box-icon>
-      </button>
+      </button> -->
 
       <button id="tts-btn-2" class="btn"> </i>TTS Permission</button>
     </div>

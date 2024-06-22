@@ -5,12 +5,14 @@ const azureKey = '381cba4fbffc487e8e9b47de5887d40d';
 const azureRegion = 'eastus';
 
 
-document.getElementById('start-btn-2').addEventListener('click', startListening2);
-document.getElementById('stop-btn-2').addEventListener('click', stopListening2);
+// document.getElementById('start-btn-2').addEventListener('click', startListening2);
+// document.getElementById('stop-btn-2').addEventListener('click', stopListening2);
 // const azureKey = '381cba4fbffc487e8e9b47de5887d40d';
 // const azureRegion = 'eastus';
 
 let recognizer = null;
+let isWebChatReady = false
+let isLoading = false
 
 
 
@@ -19,10 +21,17 @@ let recognizer = null;
 
 function startListening2() {
 
+    if (isWebChatReady === false) {
+        document.getElementById('spinner-box').style.display = 'flex'
+        toastr.info("Web chat not ready yet")
+
+
+        return
+    }
 
     try {
 
-
+        document.getElementById('spinner-box').style.display = 'none'
         const speechConfig = window.SpeechSDK.SpeechConfig.fromSubscription(azureKey, azureRegion);
         const audioConfig = window.SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
         recognizer = new window.SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
@@ -49,8 +58,8 @@ function startListening2() {
             () => {
 
                 toastr.success('Microphone on!');
-                document.getElementById('start-btn-2').style.display = 'none';
-                document.getElementById('stop-btn-2').style.display = 'block';
+                // document.getElementById('start-btn-2').style.display = 'none';
+                // document.getElementById('stop-btn-2').style.display = 'block';
                 console.log('Recognition started.');
             },
             (err) => {
@@ -65,8 +74,8 @@ function startListening2() {
             // toastr.info('Session stopped. Microphone off.');
             recognizer.stopContinuousRecognitionAsync();
             isListening = false;
-            document.getElementById('start-btn-2').style.display = 'block';
-            document.getElementById('stop-btn-2').style.display = 'none';
+            // document.getElementById('start-btn-2').style.display = 'block';
+            // document.getElementById('stop-btn-2').style.display = 'none';
         };
 
         recognizer.canceled = () => {
@@ -74,8 +83,8 @@ function startListening2() {
             toastr.info('Recognition canceled. Microphone off.');
             recognizer.stopContinuousRecognitionAsync();
             isListening = false;
-            document.getElementById('start-btn-2').style.display = 'block';
-            document.getElementById('stop-btn-2').style.display = 'none';
+            // document.getElementById('start-btn-2').style.display = 'block';
+            // document.getElementById('stop-btn-2').style.display = 'none';
         };
 
     } catch (error) {
@@ -90,8 +99,8 @@ function startListening2() {
 function stopListening2() {
     isListening = false;
     toastr.info("Microphone is off");
-    document.getElementById('start-btn-2').style.display = 'block';
-    document.getElementById('stop-btn-2').style.display = 'none';
+    // document.getElementById('start-btn-2').style.display = 'block';
+    // document.getElementById('stop-btn-2').style.display = 'none';
 
     if (recognizer) {
         recognizer.stopContinuousRecognitionAsync(

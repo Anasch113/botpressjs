@@ -15,6 +15,7 @@ let messageCount = 0;
 let isPermissionGranted = false
 
 
+
 // Toastr configuration
 toastr.options = {
   "closeButton": true,
@@ -46,15 +47,14 @@ window.botpressWebChat.onEvent((event) => {
       botSpeaking = true;
       stopListening2();
       speakText(message.text);
+
     }
   }
   else if (event.type === 'LIFECYCLE.READY') {
     console.log("Chat interface ready", event);
-    const initialMessage = "Conversation Started";
-    window.botpressWebChat.sendPayload({
-      type: 'text',
-      text: initialMessage,
-    });
+    isWebChatReady = true
+    startListening2()
+
   }
 }, ['MESSAGE.RECEIVED', 'LIFECYCLE.READY']);
 
@@ -106,13 +106,22 @@ console.log("botSpeaking", botSpeaking)
 // Add an event listener to the avatar to click the permissions buttons
 document.getElementById('avatar').addEventListener('click', () => {
   handleAvatar()
-  startListening2();
-  document.getElementById('tts-btn-2').click();
+
+  if (isWebChatReady === true) {
+    startListening2();
+  }
+
+  if (isWebChatReady === false) {
+    document.getElementById('tts-btn-2').click();
+  }
+
+
+
 });
 
 
 
-function handleAvatar(){
+function handleAvatar() {
 
   window.botpressWebChat.sendEvent({ type: 'toggleBotInfo' })
 
