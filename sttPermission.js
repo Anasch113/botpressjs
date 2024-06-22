@@ -23,7 +23,7 @@ function startListening2() {
 
     if (isWebChatReady === false) {
         document.getElementById('spinner-box').style.display = 'flex'
-        toastr.info("Web chat not ready yet")
+        // toastr.info("Web chat not ready yet")
 
 
         return
@@ -40,7 +40,7 @@ function startListening2() {
             if (e.result.reason === window.SpeechSDK.ResultReason.RecognizedSpeech) {
                 const transcript = e.result.text;
 
-                toastr.success(transcript)
+                // toastr.success(transcript)
 
                 window.botpressWebChat.sendPayload({ type: 'text', text: transcript });
 
@@ -57,7 +57,7 @@ function startListening2() {
         recognizer.startContinuousRecognitionAsync(
             () => {
 
-                toastr.success('Microphone on!');
+                // toastr.success('Microphone on!');
                 // document.getElementById('start-btn-2').style.display = 'none';
                 // document.getElementById('stop-btn-2').style.display = 'block';
                 console.log('Recognition started.');
@@ -98,7 +98,7 @@ function startListening2() {
 
 function stopListening2() {
     isListening = false;
-    toastr.info("Microphone is off");
+    // toastr.info("Microphone is off");
     // document.getElementById('start-btn-2').style.display = 'block';
     // document.getElementById('stop-btn-2').style.display = 'none';
 

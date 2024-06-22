@@ -13,6 +13,7 @@ let synthesizer = null;
 let botSpeaking = false;
 let messageCount = 0;
 let isPermissionGranted = false
+let pendingMessages = [];
 
 
 
@@ -39,15 +40,17 @@ toastr.options = {
 window.botpressWebChat.onEvent((event) => {
 
   if (event.type === 'MESSAGE.RECEIVED') {
-
     console.log("A new message was received", event);
     const message = event.value.payload;
     if (message && message.text) {
       messageCount++;
       botSpeaking = true;
       stopListening2();
-      speakText(message.text);
+      pendingMessages.push(message.text);
 
+      if (!isSpeaking) {
+        speakText(pendingMessages.shift());
+      }
     }
   }
   else if (event.type === 'LIFECYCLE.READY') {
@@ -60,41 +63,105 @@ window.botpressWebChat.onEvent((event) => {
 
 
 
+// TTS Integration
 
+// function calculateSpeechDuration(text) {
+//   const wordsPerMinute = 150; // Average speaking rate
+//   const words = text.split(' ').length;
+//   const minutes = words / wordsPerMinute;
+//   return minutes * 60 * 1000; // Convert to milliseconds
+// }
 
 function speakText(text) {
-  console.log("AI is speaking...");
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'en-US';
+  const speechConfig = window.SpeechSDK.SpeechConfig.fromSubscription(azureKey, azureRegion);
+  const audioConfig = window.SpeechSDK.AudioConfig.fromDefaultSpeakerOutput();
+  const synthesizer = new window.SpeechSDK.SpeechSynthesizer(speechConfig, audioConfig);
 
-  utterance.onend = () => {
-    isSpeaking = false;
-    messageCount--;
-    console.log("Speech synthesis completed");
 
-    if (messageCount === 0) {
-      botSpeaking = false;
-      if (!isListening) {
-        startListening2();
+  console.log("text in speakText", text)
+  if (synthesizer) {
+    isSpeaking = true;
+
+
+    synthesizer.speakTextAsync(
+      text,
+      (result) => {
+        if (result.reason === window.SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
+          console.log('Speech synthesized for text [' + text + ']');
+          isSpeaking = false;
+          messageCount--;
+          console.log("Speech synthesis completed");
+
+          if (messageCount > 0 && pendingMessages.length > 0) {
+            setTimeout(() => {
+              speakText(pendingMessages.shift());
+            }, text.length * 90);
+          } else {
+            botSpeaking = false;
+            if (!isListening) {
+              startListening2();
+            }
+          }
+        } else {
+          console.error('Speech synthesis canceled, ' + result.errorDetails);
+          isSpeaking = false;
+          if (messageCount > 0 && pendingMessages.length > 0) {
+            setTimeout(() => {
+              speakText(pendingMessages.shift());
+            }, duration);
+          }
+        }
+      },
+      (err) => {
+        console.trace('Error synthesizing speech:', err);
+        isSpeaking = false;
+        if (messageCount > 0 && pendingMessages.length > 0) {
+          setTimeout(() => {
+            speakText(pendingMessages.shift());
+          }, duration);
+        }
       }
-    }
-  };
-
-  utterance.onerror = (event) => {
-    console.error("Speech synthesis error:", event.error);
-    isSpeaking = false;
-    messageCount--;
-    if (messageCount === 0) {
-      botSpeaking = false;
-      if (!isListening) {
-        startListening2();
-      }
-    }
-  };
-
-  isSpeaking = true;
-  window.speechSynthesis.speak(utterance);
+    );
+  } else {
+    console.error('Synthesizer not initialized');
+  }
 }
+
+
+console.log("message count", messageCount)
+// function speakText(text) {
+//   console.log("AI is speaking...");
+//   const utterance = new SpeechSynthesisUtterance(text);
+//   utterance.lang = 'en-US';
+
+//   utterance.onend = () => {
+//     isSpeaking = false;
+//     messageCount--;
+//     console.log("Speech synthesis completed");
+
+//     if (messageCount === 0) {
+//       botSpeaking = false;
+//       if (!isListening) {
+//         startListening2();
+//       }
+//     }
+//   };
+
+//   utterance.onerror = (event) => {
+//     console.error("Speech synthesis error:", event.error);
+//     isSpeaking = false;
+//     messageCount--;
+//     if (messageCount === 0) {
+//       botSpeaking = false;
+//       if (!isListening) {
+//         startListening2();
+//       }
+//     }
+//   };
+
+//   isSpeaking = true;
+//   window.speechSynthesis.speak(utterance);
+// }
 
 
 console.log("botSpeaking", botSpeaking)
