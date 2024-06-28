@@ -51,7 +51,7 @@
     display: none;
 }
 #tts-btn-2{
-    display: none;
+    display: block;
 }
 
 .container {
@@ -131,6 +131,11 @@
 #spinner-box p {
     font-weight: 400;
 }
+.bpw-button {
+    background-color: #f5f5f5;
+    border-radius: 3px;
+    border: 1px transparent;
+  }
 
 @keyframes spin {
     0% {

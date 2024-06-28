@@ -10,7 +10,7 @@ let shouldstartListening = false;
 let isConversation = false;
 
 let synthesizer = null;
-let botSpeaking = false;
+
 let messageCount = 0;
 let isPermissionGranted = false
 let pendingMessages = [];
@@ -44,7 +44,7 @@ window.botpressWebChat.onEvent((event) => {
     const message = event.value.payload;
     if (message && message.text) {
       messageCount++;
-      botSpeaking = true;
+      botSpeaking = true
       stopListening2();
       pendingMessages.push(message.text);
 
@@ -70,9 +70,12 @@ window.botpressWebChat.onEvent((event) => {
 //   const words = text.split(' ').length;
 //   const minutes = words / wordsPerMinute;
 //   return minutes * 60 * 1000; // Convert to milliseconds
+
+console.log("bot speaking", botSpeaking)
 // }
 
 function speakText(text) {
+
   const speechConfig = window.SpeechSDK.SpeechConfig.fromSubscription(azureKey, azureRegion);
   const audioConfig = window.SpeechSDK.AudioConfig.fromDefaultSpeakerOutput();
   const synthesizer = new window.SpeechSDK.SpeechSynthesizer(speechConfig, audioConfig);
@@ -93,9 +96,10 @@ function speakText(text) {
           console.log("Speech synthesis completed");
 
           if (messageCount > 0 && pendingMessages.length > 0) {
+            botSpeaking = true
             setTimeout(() => {
               speakText(pendingMessages.shift());
-            }, text.length * 90);
+            }, text.length * 95);
           } else {
             botSpeaking = false;
             if (!isListening) {
@@ -129,45 +133,6 @@ function speakText(text) {
 
 
 console.log("message count", messageCount)
-// function speakText(text) {
-//   console.log("AI is speaking...");
-//   const utterance = new SpeechSynthesisUtterance(text);
-//   utterance.lang = 'en-US';
-
-//   utterance.onend = () => {
-//     isSpeaking = false;
-//     messageCount--;
-//     console.log("Speech synthesis completed");
-
-//     if (messageCount === 0) {
-//       botSpeaking = false;
-//       if (!isListening) {
-//         startListening2();
-//       }
-//     }
-//   };
-
-//   utterance.onerror = (event) => {
-//     console.error("Speech synthesis error:", event.error);
-//     isSpeaking = false;
-//     messageCount--;
-//     if (messageCount === 0) {
-//       botSpeaking = false;
-//       if (!isListening) {
-//         startListening2();
-//       }
-//     }
-//   };
-
-//   isSpeaking = true;
-//   window.speechSynthesis.speak(utterance);
-// }
-
-
-console.log("botSpeaking", botSpeaking)
-
-
-// STT Code
 
 
 // Add an event listener to the avatar to click the permissions buttons
@@ -193,24 +158,4 @@ function handleAvatar() {
   window.botpressWebChat.sendEvent({ type: 'toggleBotInfo' })
 
 }
-
-// Function to request microphone permission
-
-// function requestPermission() {
-//   // Request permission to use the microphone
-//   navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-//     // Initialize microphone
-//     const audioTracks = stream.getAudioTracks();
-//     if (audioTracks.length > 0) {
-//       toastr.success("Permission Enabled")
-//       isPermissionGranted = true
-//       audioTracks[0].stop(); // Immediately stop the tracks to just get the permission
-//     }
-
-//     startListening2();
-//   }).catch(function (err) {
-//     console.error('Permission denied for microphone:', err);
-//     toastr.error('error:', err);
-//   });
-// }
 

@@ -1,8 +1,8 @@
 
 
 
-const azureKey = '381cba4fbffc487e8e9b47de5887d40d';
-const azureRegion = 'eastus';
+const azureKey = '5bbf9257a8be4c6092bcb287f1579bf7';
+const azureRegion = 'germanywestcentral';
 
 
 // document.getElementById('start-btn-2').addEventListener('click', startListening2);
@@ -13,6 +13,7 @@ const azureRegion = 'eastus';
 let recognizer = null;
 let isWebChatReady = false
 let isLoading = false
+let botSpeaking = false;
 
 
 
@@ -28,6 +29,11 @@ function startListening2() {
 
         return
     }
+
+    if (botSpeaking) {
+        return
+    }
+
 
     try {
 
@@ -49,7 +55,7 @@ function startListening2() {
             } else {
 
                 console.log('No speech could be recognized.');
-                stopListening2()
+                recognizer.stopContinuousRecognitionAsync();
                 // toastr.warning('No speech could be recognized. Microphone off.');
             }
         };
