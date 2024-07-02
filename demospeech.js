@@ -8,6 +8,7 @@
 
 var SpeechSDK;
 var synthesizer;
+var startSpeakTextAsyncButton;
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -24,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig);
 
-          let inputText = "Hey, I am your storyteller for fairy tales. Which fairy tale would you like to hear?";
+          let inputText = "Hey, ich bin dein Vorleser für Märchen. Welches Märchen möchtest du hören?";
           synthesizer.speakTextAsync(
                inputText,
                function (result) {

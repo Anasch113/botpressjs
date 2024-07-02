@@ -2,18 +2,17 @@
 
 
 
-
-
 let isListening = false;
 let isSpeaking = false;
 let shouldstartListening = false;
 let isConversation = false;
 
-let synthesizer = null;
+
 
 let messageCount = 0;
 let isPermissionGranted = false
 let pendingMessages = [];
+var startSpeakTextButton;
 
 
 
@@ -46,11 +45,12 @@ window.botpressWebChat.onEvent((event) => {
       messageCount++;
       botSpeaking = true
       stopListening2();
-      pendingMessages.push(message.text);
+      // pendingMessages.push(message.text);
 
-      if (!isSpeaking) {
-        speakText(pendingMessages.shift());
-      }
+
+      // speakText(pendingMessages.shift());
+      document.getElementById('tts-btn').click()
+
     }
   }
   else if (event.type === 'LIFECYCLE.READY') {
@@ -69,93 +69,107 @@ window.botpressWebChat.onEvent((event) => {
 
 console.log("bot speaking", botSpeaking)
 // }
+var SpeechSDK;
+var synthesizer;
 
-function speakText(text) {
-  var SpeechSDK;
-  var synthesizer;
 
-  // Ensure Speech SDK is available
-  if (!window.SpeechSDK) {
-    console.error('SpeechSDK is not available');
-    return;
-  }
 
-  SpeechSDK = window.SpeechSDK;
+document.addEventListener('DOMContentLoaded', function speakText() {
 
-  const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(azureKey, azureRegion);
-  const audioConfig = SpeechSDK.AudioConfig.fromDefaultSpeakerOutput();
-  synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig, audioConfig);
+  startSpeakTextButton = document.getElementById("tts-btn");
 
-  console.log("text in speakText", text);
-  if (synthesizer) {
-    isSpeaking = true;
 
-    synthesizer.speakTextAsync(
-      text,
-      (result) => {
-        if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
-          console.log('Speech synthesized for text [' + text + ']');
-          isSpeaking = false;
-          messageCount--;
-          console.log("Speech synthesis completed");
-          console.log("result data", result);
-          console.log(" pending messages ", pendingMessages.length);
-          const duration = result.privAudioDuration / 10000;
+  startSpeakTextButton.addEventListener("click", function () {
 
-          if (messageCount > 0 && pendingMessages.length > 0) {
-            botSpeaking = true;
 
-            setTimeout(() => {
-              speakText(pendingMessages.shift());
-            }, duration);
 
+
+
+    speechConfig = SpeechSDK.SpeechConfig.fromSubscription(azureKey, azureRegion);
+
+    synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig);
+    let text = "hello it is working"
+    console.log("text in speakText", text);
+    if (synthesizer) {
+      isSpeaking = true;
+
+      synthesizer.speakTextAsync(
+        text,
+        function (result) {
+          if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
+            console.log('Speech synthesized for text [' + text + ']');
+            isSpeaking = false;
+            messageCount--;
+            console.log("Speech synthesis completed");
+            console.log("result data", result);
+            console.log(" pending messages ", pendingMessages.length);
+            const duration = result.privAudioDuration / 10000;
+
+            // if (messageCount > 0 && pendingMessages.length > 0) {
+            //   botSpeaking = true;
+
+            //   setTimeout(() => {
+            //     speakText(pendingMessages.shift());
+            //   }, duration);
+
+            // } else {
+
+
+
+            //   if (!isListening) {
+            //     botSpeaking = false;
+            //     setTimeout(() => {
+
+            //       startListening2();
+            //     }, duration);
+
+
+            //   }
+            // }
           } else {
-
-
-
-            if (!isListening) {
-              botSpeaking = false;
+            console.error('Speech synthesis canceled, ' + result.errorDetails);
+            toastr.error("error:", result.errorDetails)
+            isSpeaking = false;
+            if (messageCount > 0 && pendingMessages.length > 0) {
               setTimeout(() => {
-
-                startListening2();
+                speakText(pendingMessages.shift());
               }, duration);
-
-
             }
           }
-        } else {
-          console.error('Speech synthesis canceled, ' + result.errorDetails);
-          toastr.error("error:", result.errorDetails)
+
+          synthesizer.close();
+          synthesizer = undefined;
+        },
+        (err) => {
+          toastr.error("error", err)
+          console.trace('Error synthesizing speech:', err);
           isSpeaking = false;
           if (messageCount > 0 && pendingMessages.length > 0) {
             setTimeout(() => {
               speakText(pendingMessages.shift());
             }, duration);
           }
-        }
 
-        synthesizer.close();
-        synthesizer = undefined;
-      },
-      (err) => {
-        toastr.error("error", err)
-        console.trace('Error synthesizing speech:', err);
-        isSpeaking = false;
-        if (messageCount > 0 && pendingMessages.length > 0) {
-          setTimeout(() => {
-            speakText(pendingMessages.shift());
-          }, duration);
+          synthesizer.close();
+          synthesizer = undefined;
         }
+      );
+    } else {
+      console.error('Synthesizer not initialized');
+      toastr.error("Synthesizer not initialized")
+    }
 
-        synthesizer.close();
-        synthesizer = undefined;
-      }
-    );
-  } else {
-    console.error('Synthesizer not initialized');
-    toastr.error("Synthesizer not initialized")
+
+  })
+  if (!!window.SpeechSDK) {
+    SpeechSDK = window.SpeechSDK;
+    startSpeakTextButton.disabled = false;
+
+    //    document.getElementById('content').style.display = 'block';
+    //    document.getElementById('warning').style.display = 'none';
   }
-}
+
+})
 
 console.log("message count", messageCount)
 
@@ -182,4 +196,3 @@ function handleAvatar() {
   window.botpressWebChat.sendEvent({ type: 'toggleBotInfo' })
 
 }
-
