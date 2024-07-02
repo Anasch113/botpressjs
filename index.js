@@ -56,58 +56,76 @@ window.botpressWebChat.onEvent((event) => {
   else if (event.type === 'LIFECYCLE.READY') {
     console.log("Chat interface ready", event);
     isWebChatReady = true
+
     startListening2()
+
+    document.getElementById('spinner-box').style.display = 'none'
 
   }
 }, ['MESSAGE.RECEIVED', 'LIFECYCLE.READY']);
 
 
 
-// TTS Integration
-
-// function calculateSpeechDuration(text) {
-//   const wordsPerMinute = 150; // Average speaking rate
-//   const words = text.split(' ').length;
-//   const minutes = words / wordsPerMinute;
-//   return minutes * 60 * 1000; // Convert to milliseconds
 
 console.log("bot speaking", botSpeaking)
 // }
 
 function speakText(text) {
+  var SpeechSDK;
+  var synthesizer;
 
-  const speechConfig = window.SpeechSDK.SpeechConfig.fromSubscription(azureKey, azureRegion);
-  const audioConfig = window.SpeechSDK.AudioConfig.fromDefaultSpeakerOutput();
-  const synthesizer = new window.SpeechSDK.SpeechSynthesizer(speechConfig, audioConfig);
+  // Ensure Speech SDK is available
+  if (!window.SpeechSDK) {
+    console.error('SpeechSDK is not available');
+    return;
+  }
 
+  SpeechSDK = window.SpeechSDK;
 
-  console.log("text in speakText", text)
+  const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(azureKey, azureRegion);
+  const audioConfig = SpeechSDK.AudioConfig.fromDefaultSpeakerOutput();
+  synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig, audioConfig);
+
+  console.log("text in speakText", text);
   if (synthesizer) {
     isSpeaking = true;
-
 
     synthesizer.speakTextAsync(
       text,
       (result) => {
-        if (result.reason === window.SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
+        if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
           console.log('Speech synthesized for text [' + text + ']');
           isSpeaking = false;
           messageCount--;
           console.log("Speech synthesis completed");
+          console.log("result data", result);
+          console.log(" pending messages ", pendingMessages.length);
+          const duration = result.privAudioDuration / 10000;
 
           if (messageCount > 0 && pendingMessages.length > 0) {
-            botSpeaking = true
+            botSpeaking = true;
+
             setTimeout(() => {
               speakText(pendingMessages.shift());
-            }, text.length * 95);
+            }, duration);
+
           } else {
-            botSpeaking = false;
+
+
+
             if (!isListening) {
-              startListening2();
+              botSpeaking = false;
+              setTimeout(() => {
+
+                startListening2();
+              }, duration);
+
+
             }
           }
         } else {
           console.error('Speech synthesis canceled, ' + result.errorDetails);
+          toastr.error("error:", result.errorDetails)
           isSpeaking = false;
           if (messageCount > 0 && pendingMessages.length > 0) {
             setTimeout(() => {
@@ -115,8 +133,12 @@ function speakText(text) {
             }, duration);
           }
         }
+
+        synthesizer.close();
+        synthesizer = undefined;
       },
       (err) => {
+        toastr.error("error", err)
         console.trace('Error synthesizing speech:', err);
         isSpeaking = false;
         if (messageCount > 0 && pendingMessages.length > 0) {
@@ -124,13 +146,16 @@ function speakText(text) {
             speakText(pendingMessages.shift());
           }, duration);
         }
+
+        synthesizer.close();
+        synthesizer = undefined;
       }
     );
   } else {
     console.error('Synthesizer not initialized');
+    toastr.error("Synthesizer not initialized")
   }
 }
-
 
 console.log("message count", messageCount)
 
@@ -144,14 +169,13 @@ document.getElementById('avatar').addEventListener('click', () => {
   }
 
   if (isWebChatReady === false) {
-    document.getElementById('tts-btn-2').click();
+    document.getElementById('tts-btn-2').click()
   }
-
 
 
 });
 
-
+console.log("iswebchat", isWebChatReady)
 
 function handleAvatar() {
 

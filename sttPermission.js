@@ -30,9 +30,11 @@ function startListening2() {
         return
     }
 
-    if (botSpeaking) {
-        return
-    }
+    // if (botSpeaking === true) {
+    //     toastr.info("Bot is speaking")
+    //     return
+    // }
+
 
 
     try {
@@ -50,7 +52,7 @@ function startListening2() {
 
                 window.botpressWebChat.sendPayload({ type: 'text', text: transcript });
 
-                recognizer.stopContinuousRecognitionAsync();
+                stopListening2()
 
             } else {
 
