@@ -22,10 +22,11 @@
     border-radius: 100px;
 
     font-size: 1rem;
-   
+
 
 }
-#tts-btn{
+
+#tts-btn {
     display: none;
 }
 
@@ -53,7 +54,8 @@
 .btn-stop-hide {
     display: none;
 }
-#tts-btn-2{
+
+#tts-btn-2 {
     display: none;
 
 }
@@ -78,7 +80,21 @@
     margin-top: 50px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2),
         0 6px 20px rgba(0, 0, 0, 0.19);
+    transition: transform 0.1s, box-shadow 0.1s;
 
+
+}
+
+@keyframes bounce {
+    0% { transform: scale(1); }
+    30% { transform: scale(0.9); }
+    50% { transform: scale(1.05); }
+    70% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+.avatar-box.clicked {
+    animation: bounce 0.3s;
 }
 
 .avatar-box:hover {
@@ -135,11 +151,12 @@
 #spinner-box p {
     font-weight: 400;
 }
+
 .bpw-button {
     background-color: #f5f5f5;
     border-radius: 3px;
     border: 1px transparent;
-  }
+}
 
 @keyframes spin {
     0% {
