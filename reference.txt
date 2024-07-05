@@ -312,3 +312,10 @@ code 2 is working on ios but the code 1 is not working on ios . So I want to mak
           //    document.getElementById('content').style.display = 'block';
           //    document.getElementById('warning').style.display = 'none';
      }
+
+
+
+
+
+     issues:-
+     avatar not working when clicking. Mic icon still on screen-

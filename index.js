@@ -1,9 +1,4 @@
 
-
-
-
-
-
 let isListening = false;
 let isSpeaking = false;
 let shouldstartListening = false;
@@ -53,6 +48,8 @@ window.botpressWebChat.onEvent((event) => {
       }
     }
   }
+
+
   else if (event.type === 'LIFECYCLE.READY') {
     console.log("Chat interface ready", event);
     isWebChatReady = true
@@ -162,35 +159,39 @@ console.log("message count", messageCount)
 
 // Add an event listener to the avatar to click the permissions buttons
 document.getElementById('avatar').addEventListener('click', () => {
-  handleAvatar()
-
-  if (isWebChatReady === true) {
-    startListening2();
-  }
 
   if (isWebChatReady === false) {
     document.getElementById('tts-btn-2').click()
   }
 
+  setTimeout(() => {
+    window.botpressWebChat.sendEvent({ type: 'toggleBotInfo' })
+  }, 2000)
+
+
+
+  if (isWebChatReady === true) {
+    startListening2();
+  }
+
+
+
 
 });
 
 console.log("iswebchat", isWebChatReady)
-
-function handleAvatar() {
-
-  window.botpressWebChat.sendEvent({ type: 'toggleBotInfo' })
-
-}
+console.log("ispeaking", isSpeaking)
 
 
-document.addEventListener('DOMContentLoaded', function() {
+
+
+document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.avatar-box').forEach(box => {
-      box.addEventListener('click', () => {
-          box.classList.add('clicked');
-          setTimeout(() => {
-              box.classList.remove('clicked');
-          }, 100); // Duration matches the animation time
-      });
+    box.addEventListener('click', () => {
+      box.classList.add('clicked');
+      setTimeout(() => {
+        box.classList.remove('clicked');
+      }, 100); // Duration matches the animation time
+    });
   });
 });
