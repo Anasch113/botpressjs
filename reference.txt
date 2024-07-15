@@ -13,9 +13,10 @@ hi Anasch, when you are ready with Eid we start next project:
 text me whenever it works for you
 
 
+https://ki-wandel.de/ai-avatar-generator-sprechenden-avatar-erstellen/
 
-
-
+https://docs.d-id.com/reference/agents-sdk-overview
+https://studio.d-id.com/agents/share
 
 
 
@@ -318,4 +319,4 @@ code 2 is working on ios but the code 1 is not working on ios . So I want to mak
 
 
      issues:-
-     avatar not working when clicking. Mic icon still on screen-
+     avatar not working when clicking. Mic icon still on screen- (resolved)

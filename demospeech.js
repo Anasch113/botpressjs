@@ -9,10 +9,14 @@
 var SpeechSDK;
 var synthesizer;
 var startSpeakTextAsyncButton;
+var avatarVideo;
+var avatarPauseVideo;
 
 document.addEventListener("DOMContentLoaded", function () {
 
      startSpeakTextAsyncButton = document.getElementById("tts-btn-2");
+     avatarVideo = document.getElementById("avatar")
+     avatarPauseVideo = document.getElementById("pause-avatar")
 
 
      startSpeakTextAsyncButton.addEventListener("click", function () {
@@ -31,6 +35,11 @@ document.addEventListener("DOMContentLoaded", function () {
                function (result) {
                     startSpeakTextAsyncButton.disabled = false;
 
+                    avatarVideo.play();
+                    avatarPauseVideo.pause();
+                    avatarVideo.style.display = 'block'
+                    avatarPauseVideo.style.display = 'none'
+
                     if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
                          console.log("TTS Completed")
                     } else if (result.reason === SpeechSDK.ResultReason.Canceled) {
@@ -38,9 +47,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     const duration = result.privAudioDuration / 10000
 
-                    // setTimeout(() => {
-                    //      document.getElementById('spinner-box').style.display = 'flex'
-                    // }, duration)
+                    setTimeout(() => {
+                         avatarPauseVideo.play();
+                         avatarVideo.pause();
+                        
+                         avatarVideo.style.display = 'none'
+                         avatarPauseVideo.style.display = 'block'
+                    }, duration)
 
                     window.console.log("result duration", result.privAudioDuration / 10000
                     );

@@ -24,7 +24,7 @@ function startListening2() {
 
     if (isWebChatReady === false) {
         document.getElementById('spinner-box').style.display = 'flex'
-        // toastr.info("Web chat not ready yet")
+        toastr.info("Web chat not ready yet")
 
 
         return
@@ -51,7 +51,7 @@ function startListening2() {
                 // toastr.success(transcript)
 
                 window.botpressWebChat.sendPayload({ type: 'text', text: transcript });
-
+                console.log("message sent:", transcript)
                 stopListening2()
 
             } else {
